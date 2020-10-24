@@ -1,11 +1,15 @@
-import React, { Fragment } from "react";
+import React from "react";
 import TodoItem from "./TodoItem";
-import { List, Paper } from "@material-ui/core";
+import Grid from "@material-ui/core/Grid";
 
-const TodoList = ({todos, actionTodo}) => {
-    return ( <Paper elevation={3} style={{width: '50%'}}><List component="nav" aria-label="main mailbox folders">
-        {todos.map(todo => <TodoItem key={todo.id} todo={todo} actionTodo={actionTodo} />)}
-    </List></Paper> );
-}
- 
+const TodoList = ({ todos, actionTodo }) => {
+  return (
+    <Grid container spacing={4}>
+      {todos.map((todo) => (
+        <TodoItem key={todo.id} todo={todo} actionTodo={actionTodo} />
+      ))}
+    </Grid>
+  );
+};
+
 export default TodoList;

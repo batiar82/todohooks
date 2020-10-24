@@ -6,10 +6,10 @@ const TodoForm = ({addTodo}) => {
         addTodo(text);
         setText('');
     }
-    return ( <Fragment>
+    return ( <>
         <TextField id="outlined-basic" label="New Todo" variant="outlined" value={text} onChange={event => setText(event.target.value)}/>
         <Button color="primary" onClick={onSubmit} disabled={!text.length}>Submit</Button>
-    </Fragment> );
+    </> );
 }
  
 export default TodoForm;
