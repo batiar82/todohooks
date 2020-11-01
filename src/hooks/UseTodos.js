@@ -14,7 +14,7 @@ export const useTodos = (
   const addTodo = (todoText) => {
     const newTodo = { text: todoText, id: uuid(), done: false };
     setTodos([...todos, newTodo]);
-    onAddTodo(newTodo);
+  onAddTodo(newTodo);
   };
 
   const actionTodo = ({ action, id }) => {

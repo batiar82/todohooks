@@ -4,7 +4,7 @@ import TodoList from "./TodoList";
 import Container from "@material-ui/core/Container";
 import { SnackbarContext } from "./SnackbarContext";
 import { makeStyles } from "@material-ui/core/styles";
-import { useTodos } from "../hooks/TodoHook";
+import { useTodos } from "../hooks/UseTodos";
 
 const useStyles = makeStyles((theme) => ({
   todoForm: {
