@@ -7,6 +7,7 @@ import CardMedia from '@material-ui/core/CardMedia';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
+import { DELETE_TODO, TOGGLE_TODO } from '../hooks/UseTodos';
 
 const useStyles = makeStyles({
     root: {
@@ -21,10 +22,10 @@ const TodoItem = ({todo, actionTodo}) => {
     const classes = useStyles();
 
     const onDelete = () =>{
-        actionTodo({action: 'DELETE', id: todo.id});
+        actionTodo({action: DELETE_TODO, id: todo.id});
     }
     const onDone = () =>{
-        actionTodo({action: 'TOGGLE', id: todo.id});
+        actionTodo({action: TOGGLE_TODO, id: todo.id});
     }
     return ( 
         <Grid item xs={12} sm={6} md={4}>

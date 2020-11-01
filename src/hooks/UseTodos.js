@@ -1,10 +1,13 @@
 import { useState } from "react";
 import uuid from "react-uuid";
+export const TOGGLE_TODO = 'TOGGLE';
+export const DELETE_TODO = 'DELETE';
 
-export const useTodos = (
-  onAddTodo = defaultFn,
-  onDoneTodo = defaultFn,
-  onDeleteTodo = defaultFn
+export const useTodos = (callbacks = {
+  onAdd: defaultFn,
+  onToggle: defaultFn,
+  onDelete: defaultFn
+}
 ) => {
   const [todos, setTodos] = useState([
     { text: "Do Shopping", id: uuid(), done: false },
@@ -14,23 +17,23 @@ export const useTodos = (
   const addTodo = (todoText) => {
     const newTodo = { text: todoText, id: uuid(), done: false };
     setTodos([...todos, newTodo]);
-  onAddTodo(newTodo);
+    callbacks.onAdd(newTodo);
   };
 
   const actionTodo = ({ action, id }) => {
     const todoToAction = getTodoById(id, todos);
     switch (action) {
-      case "TOGGLE":
+      case TOGGLE_TODO:
         setTodos(
           todos.map((todo) => {
             return todo.id === id ? { ...todo, done: !todo.done } : todo;
           })
         );
-        onDoneTodo(todoToAction);
+        callbacks.onToggle(todoToAction);
         break;
-      case "DELETE":
+      case DELETE_TODO:
         setTodos(todos.filter((todo) => todo.id !== id));
-        onDeleteTodo(todoToAction);
+        callbacks.onDelete(todoToAction);
         break;
       default:
         return;
