@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import firebase from '../util/firebase'
 import uuid from "react-uuid";
 export const TOGGLE_TODO = 'TOGGLE';
 export const DELETE_TODO = 'DELETE';
@@ -9,10 +10,27 @@ export const useTodos = (callbacks = {
   onDelete: defaultFn
 }
 ) => {
-  const [todos, setTodos] = useState([
-    { text: "Do Shopping", id: uuid(), done: false },
-    { text: "Pay taxes", id: uuid(), done: false },
-  ]);
+  const [todos, setTodos] = useState([]);
+
+  useEffect( () => {
+    firebase.firestore().collection("todos").get()
+      .then(res => {
+          console.log('getting', res);
+          if(res.empty)
+          {
+            setTodos([
+              { text: "Do Shopping", id: uuid(), done: false },
+              { text: "Pay taxes", id: uuid(), done: false },
+            ]);
+          } else {
+          const newTodos = [];
+          res.forEach(doc => newTodos.push({id: doc.id, text:doc.data().text, done: doc.data().done}))
+          setTodos(newTodos);
+          }
+      })
+      
+   }, []);
+
 
   const addTodo = (todoText) => {
     const newTodo = { text: todoText, id: uuid(), done: false };
