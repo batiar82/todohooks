@@ -1,4 +1,3 @@
-// import * as firebase from "firebase/firebase-app";
 import firebase from 'firebase'
 import "firebase/firestore";
 const firebaseConfig = {
@@ -11,7 +10,6 @@ const firebaseConfig = {
     appId: "1:446642728201:web:7b071ce17783c4f33df7d8"
   };
   // Initialize Firebase
-
   firebase.initializeApp(firebaseConfig);
-//   firebase.analytics()
-export default firebase;
+  const todoCollection = firebase.firestore().collection("todos");
+export default todoCollection;

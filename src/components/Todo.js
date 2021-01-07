@@ -25,14 +25,13 @@ const Todos = () => {
   const onToggle = ({ text }) => openSnackbar(`Toggled "${text}" todo`);
   const onDelete = ({ text }) => openSnackbar(`Deleted "${text}" todo`);
 
-  const { todos, addTodo, actionTodo } = useTodos({onAdd, onToggle, onDelete});
-
+  const { todos, isLoading, actionTodo } = useTodos({onAdd, onToggle, onDelete});
   return (
     <>
       <Container maxWidth="sm" className={classes.todoForm}>
-        <TodoFormFormik addTodo={addTodo} />
+        <TodoFormFormik actionTodo={actionTodo} />
       </Container>
-      <TodoList todos={todos} actionTodo={actionTodo} />
+      <TodoList todos={todos} isLoading = {isLoading} actionTodo={actionTodo} />
     </>
   );
 };

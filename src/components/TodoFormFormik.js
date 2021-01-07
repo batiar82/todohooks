@@ -1,10 +1,11 @@
 import { Button, TextField } from "@material-ui/core";
 import { Formik } from "formik";
 import React from "react";
+import { ADD_TODO } from "../hooks/UseTodos";
 
-const initialValues = { text: "" };
+const initialValues = { text: "", done: false };
 
-const TodoFormformik = ({ addTodo }) => {
+const TodoFormformik = ({ actionTodo }) => {
   return (
     <Formik
       initialValues={initialValues}
@@ -16,11 +17,9 @@ const TodoFormformik = ({ addTodo }) => {
         return errors;
       }}
       onSubmit={(values, { setSubmitting, resetForm }) => {
-        setTimeout(() => {
-          addTodo(values.text);
-          setSubmitting(false);
-          resetForm(initialValues);
-        }, 400);
+        actionTodo({ action: ADD_TODO, todo: values });
+        setSubmitting(false);
+        resetForm(initialValues);
       }}
     >
       {({
@@ -29,7 +28,6 @@ const TodoFormformik = ({ addTodo }) => {
         handleBlur,
         handleSubmit,
         isSubmitting,
-        /* and other goodies */
       }) => (
         <>
           <TextField

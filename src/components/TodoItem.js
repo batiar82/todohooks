@@ -22,10 +22,10 @@ const TodoItem = ({todo, actionTodo}) => {
     const classes = useStyles();
 
     const onDelete = () =>{
-        actionTodo({action: DELETE_TODO, id: todo.id});
+        actionTodo({action: DELETE_TODO, todo: todo});
     }
     const onDone = () =>{
-        actionTodo({action: TOGGLE_TODO, id: todo.id});
+        actionTodo({action: TOGGLE_TODO, todo: todo});
     }
     return ( 
         <Grid item xs={12} sm={6} md={4}>

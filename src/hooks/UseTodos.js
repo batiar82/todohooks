@@ -1,64 +1,65 @@
-import { useEffect, useState } from "react";
-import firebase from '../util/firebase'
-import uuid from "react-uuid";
-export const TOGGLE_TODO = 'TOGGLE';
-export const DELETE_TODO = 'DELETE';
-
-export const useTodos = (callbacks = {
-  onAdd: defaultFn,
-  onToggle: defaultFn,
-  onDelete: defaultFn
-}
+import { useQuery, useMutation, useQueryClient } from "react-query";
+import {
+  getTodos,
+  addTodo as postTodo,
+  deleteTodo,
+  toggleTodo,
+} from "../util/Api";
+export const ADD_TODO = "ADD";
+export const TOGGLE_TODO = "TOGGLE";
+export const DELETE_TODO = "DELETE";
+const TODOS_QUERY = "todos";
+export const useTodos = (
+  callbacks = {
+    onAdd: defaultFn,
+    onToggle: defaultFn,
+    onDelete: defaultFn,
+  }
 ) => {
-  const [todos, setTodos] = useState([]);
+  const queryClient = useQueryClient();
+  
+  const { data, isLoading } = useQuery(TODOS_QUERY, getTodos);
+  
+  const { mutate: addMutation } = useMutation(postTodo, {
+    onSuccess: (newTodo) => {
+      // Invalidate and refetch
+      queryClient.invalidateQueries(TODOS_QUERY);
+      callbacks.onAdd(newTodo);
+    },
+  });
 
-  useEffect( () => {
-    firebase.firestore().collection("todos").get()
-      .then(res => {
-          console.log('getting', res);
-          if(res.empty)
-          {
-            setTodos([
-              { text: "Do Shopping", id: uuid(), done: false },
-              { text: "Pay taxes", id: uuid(), done: false },
-            ]);
-          } else {
-          const newTodos = [];
-          res.forEach(doc => newTodos.push({id: doc.id, text:doc.data().text, done: doc.data().done}))
-          setTodos(newTodos);
-          }
-      })
-      
-   }, []);
+  const { mutate: deleteMutation } = useMutation(deleteTodo, {
+    onSuccess: (data) => {
+      // Invalidate and refetch
+      queryClient.invalidateQueries(TODOS_QUERY);
+      callbacks.onDelete(data);
+    },
+  });
+  
+  const { mutate: toggleMutation } = useMutation(toggleTodo, {
+    onSuccess: (data) => {
+      // Invalidate and refetch
+      queryClient.invalidateQueries(TODOS_QUERY);
+      callbacks.onToggle(data);
+    },
+  });
 
-
-  const addTodo = (todoText) => {
-    const newTodo = { text: todoText, id: uuid(), done: false };
-    setTodos([...todos, newTodo]);
-    callbacks.onAdd(newTodo);
-  };
-
-  const actionTodo = ({ action, id }) => {
-    const todoToAction = getTodoById(id, todos);
+  const actionTodo = ({ action, todo }) => {
     switch (action) {
+      case ADD_TODO:
+        addMutation(todo);
+        break;
       case TOGGLE_TODO:
-        setTodos(
-          todos.map((todo) => {
-            return todo.id === id ? { ...todo, done: !todo.done } : todo;
-          })
-        );
-        callbacks.onToggle(todoToAction);
+        toggleMutation(todo);
         break;
       case DELETE_TODO:
-        setTodos(todos.filter((todo) => todo.id !== id));
-        callbacks.onDelete(todoToAction);
+        deleteMutation(todo);
         break;
       default:
         return;
     }
   };
-  return { todos, addTodo, actionTodo };
+  return { todos: data, isLoading, actionTodo };
 };
 
-const getTodoById = (id, todos) => todos.find((todo) => todo.id === id);
 const defaultFn = () => {};
