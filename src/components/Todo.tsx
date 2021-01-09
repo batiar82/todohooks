@@ -25,7 +25,7 @@ const Todos = () => {
   const onToggle = ({ text }) => openSnackbar(`Toggled "${text}" todo`);
   const onDelete = ({ text }) => openSnackbar(`Deleted "${text}" todo`);
 
-  const { todos, isLoading, actionTodo } = useTodos({onAdd, onToggle, onDelete});
+  const { todos, isLoading, actionTodo } = useTodos({onAdd, onDelete, onToggle});
   return (
     <>
       <Container maxWidth="sm" className={classes.todoForm}>

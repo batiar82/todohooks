@@ -4,27 +4,39 @@ import {
   addTodo as postTodo,
   deleteTodo,
   toggleTodo,
+  Todo,
 } from "../util/Api";
-export const ADD_TODO = "ADD";
-export const TOGGLE_TODO = "TOGGLE";
-export const DELETE_TODO = "DELETE";
+// export const ADD_TODO = "ADD";
+// export const TOGGLE_TODO = "TOGGLE";
+// export const DELETE_TODO = "DELETE";
 const TODOS_QUERY = "todos";
-export const useTodos = (
-  callbacks = {
-    onAdd: defaultFn,
-    onToggle: defaultFn,
-    onDelete: defaultFn,
-  }
-) => {
+export enum Types {
+  ADD = "ADD",
+  DELETE = "DELETE",
+  TOGGLE = "TOGGLE"
+}
+export type TodosAction = {type: Types, todo: Todo}
+type useTodosCallback = (todo: Todo) => void;
+type useTodosCallbackParam = {
+  onAdd?: useTodosCallback;
+  onDelete?: useTodosCallback;
+  onToggle?: useTodosCallback;
+};
+export const useTodos = (callbacks: useTodosCallbackParam) => {
+  const {
+    onAdd = defaultFn,
+    onDelete = defaultFn,
+    onToggle = defaultFn,
+  } = callbacks;
   const queryClient = useQueryClient();
-  
+
   const { data, isLoading } = useQuery(TODOS_QUERY, getTodos);
-  
+
   const { mutate: addMutation } = useMutation(postTodo, {
     onSuccess: (newTodo) => {
       // Invalidate and refetch
       queryClient.invalidateQueries(TODOS_QUERY);
-      callbacks.onAdd(newTodo);
+      onAdd(newTodo);
     },
   });
 
@@ -32,27 +44,27 @@ export const useTodos = (
     onSuccess: (data) => {
       // Invalidate and refetch
       queryClient.invalidateQueries(TODOS_QUERY);
-      callbacks.onDelete(data);
+      onDelete(data);
     },
   });
-  
+
   const { mutate: toggleMutation } = useMutation(toggleTodo, {
     onSuccess: (data) => {
       // Invalidate and refetch
       queryClient.invalidateQueries(TODOS_QUERY);
-      callbacks.onToggle(data);
+      onToggle(data);
     },
   });
 
-  const actionTodo = ({ action, todo }) => {
-    switch (action) {
-      case ADD_TODO:
+  const actionTodo = ({ type, todo } : TodosAction) => {
+    switch (type) {
+      case Types.ADD:
         addMutation(todo);
         break;
-      case TOGGLE_TODO:
+      case Types.TOGGLE:
         toggleMutation(todo);
         break;
-      case DELETE_TODO:
+      case Types.DELETE:
         deleteMutation(todo);
         break;
       default:
@@ -62,4 +74,4 @@ export const useTodos = (
   return { todos: data, isLoading, actionTodo };
 };
 
-const defaultFn = () => {};
+const defaultFn = (todo: Todo) => {};

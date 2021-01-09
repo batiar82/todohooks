@@ -1,11 +1,11 @@
 import React, { createContext, useState, Fragment } from "react";
 import { Snackbar } from "@material-ui/core";
 
-export const SnackbarContext = createContext();
+export const SnackbarContext = createContext(null);
 
-const SnackbarContextProvider = ({ children }) => {
+const SnackbarContextProvider: React.FC = ({ children }) => {
   const [text, setText] = useState("");
-  const setOpen = (text) => {
+  const setOpen = (text: string) => {
     setText(text);
   };
   const onClose = () => {

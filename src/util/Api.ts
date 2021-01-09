@@ -1,7 +1,13 @@
 import todoCollection from "./Firebase";
 import uuid from "react-uuid";
 
-const getTodos = () => {
+export type Todo = {
+  id?: string,
+  text: string,
+  done: boolean
+}
+
+const getTodos : () => Promise<Todo[]> = () => {
   return new Promise((resolve, reject) => {
     todoCollection
       .get()
