@@ -5,6 +5,7 @@ import Container from "@material-ui/core/Container";
 import { SnackbarContext } from "./SnackbarContext";
 import { makeStyles } from "@material-ui/core/styles";
 import { useTodos } from "../hooks/UseTodos";
+import { Todo } from "../types/Types";
 
 const useStyles = makeStyles((theme) => ({
   todoForm: {
@@ -21,11 +22,11 @@ const Todos = () => {
   const classes = useStyles();
   const [openSnackbar] = useContext(SnackbarContext);
 
-  const onAdd = ({ text }) => openSnackbar(`Created "${text}" todo`);
-  const onToggle = ({ text }) => openSnackbar(`Toggled "${text}" todo`);
-  const onDelete = ({ text }) => openSnackbar(`Deleted "${text}" todo`);
+  const onAdd = ({ text } : Todo) => openSnackbar(`Created "${text}" todo`);
+  const onToggle = ({ text } : Todo) => openSnackbar(`Toggled "${text}" todo`);
+  const onDelete = ({ text } : Todo) => openSnackbar(`Deleted "${text}" todo`);
 
-  const { todos, isLoading, actionTodo } = useTodos({onAdd, onToggle, onDelete});
+  const { todos, isLoading, actionTodo } = useTodos({onAdd, onDelete, onToggle});
   return (
     <>
       <Container maxWidth="sm" className={classes.todoForm}>

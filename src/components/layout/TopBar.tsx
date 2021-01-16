@@ -11,7 +11,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const TopBar = () => {
+const TopBar: React.FC = () => {
   const classes = useStyles();
   return (
     <AppBar position="relative">

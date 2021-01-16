@@ -1,34 +1,30 @@
 import { Button, TextField } from "@material-ui/core";
-import { Formik } from "formik";
+import { Formik, FormikErrors } from "formik";
 import React from "react";
-import { ADD_TODO } from "../hooks/UseTodos";
+import { Todo, Types, TodosAction } from "../types/Types";
+const initialValues: Todo = { text: "", done: false };
 
-const initialValues = { text: "", done: false };
-
-const TodoFormformik = ({ actionTodo }) => {
+type Props = {
+  actionTodo: (action: TodosAction) => void;
+};
+const TodoFormformik: React.FC<Props> = ({ actionTodo }) => {
   return (
-    <Formik
+    <Formik<Todo>
       initialValues={initialValues}
       validate={(values) => {
-        const errors = {};
+        const errors: FormikErrors<Todo> = {};
         if (!values.text) {
           errors.text = "Required";
         }
         return errors;
       }}
       onSubmit={(values, { setSubmitting, resetForm }) => {
-        actionTodo({ action: ADD_TODO, todo: values });
+        actionTodo({ type: Types.ADD, todo: values });
         setSubmitting(false);
-        resetForm(initialValues);
+        resetForm({ values: initialValues });
       }}
     >
-      {({
-        values,
-        handleChange,
-        handleBlur,
-        handleSubmit,
-        isSubmitting,
-      }) => (
+      {({ values, handleChange, handleBlur, handleSubmit, isSubmitting }) => (
         <>
           <TextField
             id="outlined-basic"
@@ -43,7 +39,7 @@ const TodoFormformik = ({ actionTodo }) => {
           />
           <Button
             color="primary"
-            onClick={handleSubmit}
+            onClick={() =>handleSubmit()}
             disabled={!values.text.length || isSubmitting}
           >
             Submit

@@ -7,8 +7,12 @@ import CardMedia from '@material-ui/core/CardMedia';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
-import { DELETE_TODO, TOGGLE_TODO } from '../hooks/UseTodos';
+import { Todo, Types, TodosAction } from '../types/Types';
 
+type Props = {
+  todo: Todo,
+  actionTodo: (action: TodosAction) => void
+}
 const useStyles = makeStyles({
     root: {
       maxWidth: 345,
@@ -18,14 +22,14 @@ const useStyles = makeStyles({
     },
   });
 
-const TodoItem = ({todo, actionTodo}) => {
+const TodoItem: React.FC<Props> = ({todo, actionTodo}) => {
     const classes = useStyles();
 
     const onDelete = () =>{
-        actionTodo({action: DELETE_TODO, todo: todo});
+        actionTodo({type: Types.DELETE, todo: todo});
     }
     const onDone = () =>{
-        actionTodo({action: TOGGLE_TODO, todo: todo});
+        actionTodo({type: Types.TOGGLE, todo: todo});
     }
     return ( 
         <Grid item xs={12} sm={6} md={4}>

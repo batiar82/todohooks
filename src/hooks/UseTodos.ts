@@ -5,26 +5,24 @@ import {
   deleteTodo,
   toggleTodo,
 } from "../util/Api";
-export const ADD_TODO = "ADD";
-export const TOGGLE_TODO = "TOGGLE";
-export const DELETE_TODO = "DELETE";
+import {Todo, useTodosCallbackParam, TodosAction, Types} from "../types/Types"
 const TODOS_QUERY = "todos";
-export const useTodos = (
-  callbacks = {
-    onAdd: defaultFn,
-    onToggle: defaultFn,
-    onDelete: defaultFn,
-  }
-) => {
+
+export const useTodos = (callbacks: useTodosCallbackParam) => {
+  const {
+    onAdd = defaultFn,
+    onDelete = defaultFn,
+    onToggle = defaultFn,
+  } = callbacks;
   const queryClient = useQueryClient();
-  
-  const { data, isLoading } = useQuery(TODOS_QUERY, getTodos);
-  
+
+  const { data = [], isLoading } = useQuery(TODOS_QUERY, getTodos);
+
   const { mutate: addMutation } = useMutation(postTodo, {
     onSuccess: (newTodo) => {
       // Invalidate and refetch
       queryClient.invalidateQueries(TODOS_QUERY);
-      callbacks.onAdd(newTodo);
+      onAdd(newTodo);
     },
   });
 
@@ -32,27 +30,27 @@ export const useTodos = (
     onSuccess: (data) => {
       // Invalidate and refetch
       queryClient.invalidateQueries(TODOS_QUERY);
-      callbacks.onDelete(data);
+      onDelete(data);
     },
   });
-  
+
   const { mutate: toggleMutation } = useMutation(toggleTodo, {
     onSuccess: (data) => {
       // Invalidate and refetch
       queryClient.invalidateQueries(TODOS_QUERY);
-      callbacks.onToggle(data);
+      onToggle(data);
     },
   });
 
-  const actionTodo = ({ action, todo }) => {
-    switch (action) {
-      case ADD_TODO:
+  const actionTodo = ({ type, todo } : TodosAction) => {
+    switch (type) {
+      case Types.ADD:
         addMutation(todo);
         break;
-      case TOGGLE_TODO:
+      case Types.TOGGLE:
         toggleMutation(todo);
         break;
-      case DELETE_TODO:
+      case Types.DELETE:
         deleteMutation(todo);
         break;
       default:
@@ -62,4 +60,4 @@ export const useTodos = (
   return { todos: data, isLoading, actionTodo };
 };
 
-const defaultFn = () => {};
+const defaultFn = (todo: Todo) => {};

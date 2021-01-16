@@ -1,7 +1,8 @@
 import todoCollection from "./Firebase";
-import uuid from "react-uuid";
+import { v4 as uuidv4 } from 'uuid';
+import {Todo} from "../types/Types"
 
-const getTodos = () => {
+const getTodos : () => Promise<Todo[]> = () => {
   return new Promise((resolve, reject) => {
     todoCollection
       .get()
@@ -9,11 +10,11 @@ const getTodos = () => {
         if (res.empty) {
           console.warn("res is empty, returning default todos");
           resolve([
-            { text: "Do Shopping", id: uuid(), done: false },
-            { text: "Pay taxes", id: uuid(), done: false },
+            { text: "Do Shopping", id: uuidv4(), done: false },
+            { text: "Pay taxes", id: uuidv4(), done: false },
           ]);
         } else {
-          const newTodos = [];
+          const newTodos : Todo[] = [];
           res.forEach((doc) =>
             newTodos.push({
               id: doc.id,
@@ -27,17 +28,17 @@ const getTodos = () => {
   });
 };
 
-const addTodo = async (todo) => {
+const addTodo = async (todo: Todo) => {
     await todoCollection.add(todo);
     return todo;
 } 
 
-const deleteTodo = async (todo) => {
+const deleteTodo = async (todo : Todo) => {
     await todoCollection.doc(todo.id).delete();
     return todo;
 } 
 
-const toggleTodo = async (todo) => {
+const toggleTodo = async (todo: Todo) => {
     await todoCollection.doc(todo.id).update({done: !todo.done});
     return todo;
     
