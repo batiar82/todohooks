@@ -1,4 +1,4 @@
-import React, { createContext, useState, Fragment, Dispatch, SetStateAction } from "react";
+import React, { createContext, useState, Fragment } from "react";
 import { Snackbar } from "@material-ui/core";
 
 export const SnackbarContext = createContext([(foo: string) => {}]);
