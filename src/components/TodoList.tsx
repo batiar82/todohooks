@@ -1,8 +1,7 @@
 import React from "react";
 import TodoItem from "./TodoItem";
 import Grid from "@material-ui/core/Grid";
-import {Todo} from '../util/Api'
-import { TodosAction } from "../hooks/UseTodos";
+import {Todo, TodosAction} from '../types/Types'
 type Props = {
   todos: Todo[],
   isLoading: boolean,

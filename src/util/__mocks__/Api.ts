@@ -1,4 +1,4 @@
-import {Todo} from '../Api'
+import {Todo} from '..//../types/Types'
 const getTodos : () => Promise<Todo[]> = jest.fn(() => new Promise(resolve => resolve([{id: "1", text: "Mocked Todo", done: false}])));
 const apiFn = (todo: Todo) =>
   new Promise((resolve) => {
